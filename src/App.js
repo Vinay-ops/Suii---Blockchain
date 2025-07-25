@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Transaction } from '@mysten/sui/transactions';
 import {
   useSignAndExecuteTransaction,
@@ -11,6 +11,13 @@ const LoyaltyCardPage = () => {
   const currentAccount = useCurrentAccount();
   const [loading, setLoading] = useState(false);
   const [packageId, setPackageId] = useState('');
+
+  // Modal states
+  const [modal, setModal] = useState({ open: false, type: '', message: '', txUrl: '' });
+
+  // Wallet info
+  const [balance, setBalance] = useState(null);
+  const [recentTxs, setRecentTxs] = useState([]);
 
   // Form states
   const [mintForm, setMintForm] = useState({
@@ -27,10 +34,56 @@ const LoyaltyCardPage = () => {
     setMintForm({ ...mintForm, [e.target.name]: e.target.value });
   };
 
+  // Fetch wallet balance and recent transactions
+  useEffect(() => {
+    async function fetchWalletInfo() {
+      if (!currentAccount) {
+        setBalance(null);
+        setRecentTxs([]);
+        return;
+      }
+      try {
+        // SUI balance fetch (using dapp-kit or direct fetch)
+        const resp = await fetch(`https://explorer-rpc.testnet.sui.io:443`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'sui_getBalance',
+            params: [currentAccount.address, null]
+          })
+        });
+        const data = await resp.json();
+        setBalance(data.result ? data.result.totalBalance / 1e9 : null);
+      } catch {
+        setBalance(null);
+      }
+      try {
+        // Recent transactions (last 5)
+        const resp = await fetch(`https://explorer-rpc.testnet.sui.io:443`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'sui_getTransactionsForAddress',
+            params: [currentAccount.address, null, 5]
+          })
+        });
+        const data = await resp.json();
+        setRecentTxs(data.result ? data.result.data : []);
+      } catch {
+        setRecentTxs([]);
+      }
+    }
+    fetchWalletInfo();
+  }, [currentAccount]);
+
   // Action: mint a new Loyalty card
   const mintLoyalty = async () => {
     if (!currentAccount) {
-      alert('Please connect your wallet');
+      setModal({ open: true, type: 'error', message: 'Please connect your wallet', txUrl: '' });
       return;
     }
     try {
@@ -43,11 +96,12 @@ const LoyaltyCardPage = () => {
           tx.pure.string(mintForm.imageUrl)
         ]
       });
-      await signAndExecute({ transaction: tx });
+      const result = await signAndExecute({ transaction: tx });
       setMintForm({ customerId: '', imageUrl: '' });
+      setModal({ open: true, type: 'success', message: 'Minting succeeded!', txUrl: result?.digest ? `https://suiexplorer.com/txblock/${result.digest}?network=testnet` : '' });
     } catch (error) {
+      setModal({ open: true, type: 'error', message: `Minting failed: ${error.message}`, txUrl: '' });
       console.error('Error minting loyalty card:', error);
-      alert(`Minting failed: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -57,6 +111,23 @@ const LoyaltyCardPage = () => {
     <div className="container">
       <h1>Mint Your NFT on SUI</h1>
       <ConnectButton />
+
+      {/* Wallet Info */}
+      {currentAccount && (
+        <div style={{ margin: '1rem 0', padding: '1rem', background: 'var(--input-bg)', borderRadius: '8px' }}>
+          <div><b>Wallet:</b> {currentAccount.address.slice(0, 8)}...{currentAccount.address.slice(-6)}</div>
+          <div><b>Balance:</b> {balance !== null ? `${balance} SUI` : 'Loading...'}</div>
+          <div><b>Recent Transactions:</b></div>
+          <ul style={{ fontSize: '0.95em', marginLeft: '1em' }}>
+            {recentTxs.length === 0 && <li>No recent transactions</li>}
+            {recentTxs.map((tx, i) => (
+              <li key={i}>
+                <a href={`https://suiexplorer.com/txblock/${tx}?network=testnet`} target="_blank" rel="noopener noreferrer">{tx.slice(0, 10)}...</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="package-input">
         <label>Package ID</label>
@@ -113,9 +184,30 @@ const LoyaltyCardPage = () => {
             !mintForm.imageUrl.trim()
           }
         >
-          Mint your NFT
+          {loading ? 'Minting...' : 'Mint your NFT'}
         </button>
+        {/* Loader Animation */}
+        {loading && (
+          <div style={{ textAlign: 'center', margin: '1rem 0' }}>
+            <div className="loader" style={{ display: 'inline-block', width: 40, height: 40, border: '4px solid #ccc', borderTop: '4px solid var(--accent-color)', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+          </div>
+        )}
       </section>
+
+      {/* Modal */}
+      {modal.open && (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ background: '#fff', color: '#222', padding: '2rem', borderRadius: '12px', minWidth: 300, textAlign: 'center', boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}>
+            <h2 style={{ color: modal.type === 'success' ? 'green' : 'red' }}>{modal.type === 'success' ? 'Success!' : 'Error'}</h2>
+            <p>{modal.message}</p>
+            {modal.txUrl && (
+              <a href={modal.txUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-color)' }}>View on Explorer</a>
+            )}
+            <br />
+            <button style={{ marginTop: 16 }} onClick={() => setModal({ ...modal, open: false })}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
