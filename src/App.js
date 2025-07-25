@@ -28,6 +28,18 @@ const LoyaltyCardPage = () => {
   // Image preview state
   const [imgError, setImgError] = useState(false);
 
+  // Confetti state
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  // Show confetti when success modal opens
+  useEffect(() => {
+    if (modal.open && modal.type === 'success') {
+      setShowConfetti(true);
+      const timeout = setTimeout(() => setShowConfetti(false), 1800);
+      return () => clearTimeout(timeout);
+    }
+  }, [modal]);
+
   const { mutate: signAndExecute } = useSignAndExecuteTransaction();
 
   const handleMintChange = (e) => {
@@ -197,7 +209,7 @@ const LoyaltyCardPage = () => {
       {/* Modal */}
       {modal.open && (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ background: '#fff', color: '#222', padding: '2rem', borderRadius: '12px', minWidth: 300, textAlign: 'center', boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}>
+          <div style={{ background: '#fff', color: '#222', padding: '2rem', borderRadius: '12px', minWidth: 300, textAlign: 'center', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', animation: 'modalPop 0.5s' }}>
             <h2 style={{ color: modal.type === 'success' ? 'green' : 'red' }}>{modal.type === 'success' ? 'Success!' : 'Error'}</h2>
             <p>{modal.message}</p>
             {modal.txUrl && (
@@ -205,6 +217,23 @@ const LoyaltyCardPage = () => {
             )}
             <br />
             <button style={{ marginTop: 16 }} onClick={() => setModal({ ...modal, open: false })}>Close</button>
+            {/* Confetti animation */}
+            {showConfetti && (
+              <div className="confetti">
+                {Array.from({ length: 24 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="confetti-piece"
+                    style={{
+                      left: `${Math.random() * 100}%`,
+                      background: `linear-gradient(135deg, #ff6f61, #6a82fb, #43cea2, #fc5c7d)`,
+                      animationDelay: `${Math.random() * 0.7}s`,
+                      transform: `rotate(${Math.random() * 360}deg)`
+                    }}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
