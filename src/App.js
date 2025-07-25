@@ -3,7 +3,8 @@ import { Transaction } from '@mysten/sui/transactions';
 import {
   useSignAndExecuteTransaction,
   ConnectButton,
-  useCurrentAccount
+  useCurrentAccount,
+  useSuiClientQuery
 } from '@mysten/dapp-kit';
 import './App.css';
 
