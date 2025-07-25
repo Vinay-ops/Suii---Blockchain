@@ -7,14 +7,7 @@
 A beautiful, animated React app for minting NFTs on the SUI blockchain. Features wallet connection, live image preview, animated UI, confetti celebration, and robust error handling.
 
 ---
-## 🎥 Demo Video
 
-<video width="100%" controls>
-  <source src="./Sui%20preview.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
-
----
 
 ## 🚀 Features
 - **Connect SUI Wallet** (testnet/mainnet)
