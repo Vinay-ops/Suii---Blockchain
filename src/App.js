@@ -18,6 +18,9 @@ const LoyaltyCardPage = () => {
     imageUrl: ''
   });
 
+  // Image preview state
+  const [imgError, setImgError] = useState(false);
+
   const { mutate: signAndExecute } = useSignAndExecuteTransaction();
 
   const handleMintChange = (e) => {
@@ -80,9 +83,28 @@ const LoyaltyCardPage = () => {
           type="text"
           name="imageUrl"
           value={mintForm.imageUrl}
-          onChange={handleMintChange}
+          onChange={(e) => {
+            handleMintChange(e);
+            setImgError(false); // Reset error on change
+          }}
           placeholder="Enter Image URL"
         />
+        {/* Image Preview */}
+        {mintForm.imageUrl && !imgError && (
+          <div style={{ margin: '10px 0' }}>
+            <img
+              src={mintForm.imageUrl}
+              alt="Preview"
+              style={{ maxWidth: '300px', maxHeight: '200px', border: '1px solid #ccc', borderRadius: '8px' }}
+              onError={() => setImgError(true)}
+            />
+          </div>
+        )}
+        {imgError && (
+          <div style={{ color: 'red', margin: '10px 0' }}>
+            Could not load image. Please check the URL.
+          </div>
+        )}
         <button 
           onClick={mintLoyalty} 
           disabled={
