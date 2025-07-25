@@ -102,7 +102,7 @@ const LoyaltyCardPage = () => {
       setLoading(true);
       const tx = new Transaction();
       tx.moveCall({
-        target: $`{packageId}::loyalty_card::mint_loyalty`,
+        target: `${packageId}::loyalty_card::mint_loyalty`,
         arguments: [
           tx.pure.address(mintForm.customerId),
           tx.pure.string(mintForm.imageUrl)
