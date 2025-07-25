@@ -22,6 +22,28 @@
   }
 }
 
+/* 1. Colorful Animated Gradient Background */
+body {
+  background: linear-gradient(270deg, #ff6f61, #6a82fb, #fc5c7d, #43cea2, #185a9d, #f7971e, #ffd200);
+  background-size: 1400% 1400%;
+  animation: gradientBG 18s ease infinite;
+  color: var(--text-color);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem;
+}
+
+@keyframes gradientBG {
+  0% {background-position: 0% 50%;}
+  25% {background-position: 50% 100%;}
+  50% {background-position: 100% 50%;}
+  75% {background-position: 50% 0%;}
+  100% {background-position: 0% 50%;}
+}
+
 /* 2. Global Reset & Base Styles */
 *,
 *::before,
@@ -36,36 +58,33 @@ html {
   font-size: 16px;
 }
 
-body {
-  background: var(--bg-color);
-  color: var(--text-color);
-  line-height: 1.6;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 2rem;
-}
-
-/* 3. Container & Typography */
+/* 2. Animated Card Entrance */
 .container {
   width: 100%;
   max-width: 480px;
   backdrop-filter: blur(12px);
-  background: var(--card-bg);
-  border-radius: 12px;
-  box-shadow: 0 8px 24px var(--shadow-color);
+  background: rgba(255,255,255,0.10);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
   padding: 2rem;
+  animation: cardFadeIn 1.2s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-h1, h2 {
-  margin-bottom: 1rem;
-  letter-spacing: 0.5px;
+@keyframes cardFadeIn {
+  0% { opacity: 0; transform: translateY(40px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 h1 {
-  font-size: 2rem;
+  font-size: 2.2rem;
   text-align: center;
+  background: linear-gradient(90deg, #ff6f61, #6a82fb, #43cea2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  margin-bottom: 1.5rem;
+  letter-spacing: 1px;
 }
 
 h2 {
@@ -78,49 +97,54 @@ h2 {
   margin-top: 1.5rem;
 }
 
-label {
-  display: block;
-  margin-bottom: 0.25rem;
-  font-weight: 500;
-}
-
+/* 4. Inputs & Labels */
 input[type="text"],
 input[type="number"],
 textarea,
 select {
   width: 100%;
-  background: var(--input-bg);
-  color: var(--text-color);
+  background: rgba(255,255,255,0.18);
+  color: #222;
   border: none;
-  border-radius: 6px;
-  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  padding: 0.85rem 1.1rem;
   margin-bottom: 1rem;
-  box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  font-size: 1rem;
+  transition: box-shadow 0.3s, transform 0.2s;
 }
 
 input:focus,
 textarea:focus,
 select:focus {
   outline: none;
-  box-shadow: 0 0 0 3px var(--accent-color);
-  transform: translateY(-2px);
+  box-shadow: 0 0 0 3px #6a82fb;
+  transform: translateY(-2px) scale(1.01);
+}
+
+label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+  color: #6a82fb;
+  letter-spacing: 0.5px;
 }
 
 /* 5. Buttons */
 button {
   display: block;
   width: 100%;
-  background: var(--accent-color);
+  background: linear-gradient(90deg, #ff6f61, #6a82fb);
   color: #fff;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  padding: 0.75rem;
+  padding: 0.85rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
-  box-shadow: 0 4px 12px var(--shadow-color);
-  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 16px 0 rgba(255,111,97,0.15);
+  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+  font-size: 1.1rem;
 }
 
 button:disabled {
@@ -129,9 +153,9 @@ button:disabled {
 }
 
 button:not(:disabled):hover {
-  background: lighten(var(--accent-color), 10%);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px var(--shadow-color);
+  background: linear-gradient(90deg, #43cea2, #fc5c7d);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 8px 24px 0 rgba(67,206,162,0.18);
 }
 
 /* 6. Accessibility & Performance */
@@ -139,4 +163,63 @@ button:not(:disabled):hover {
   *, *::before, *::after {
     transition: none !important;
   }
+}
+
+/* 5. Modal Styling */
+/* Modal overlay and box (inline styles in JS, but add animation here) */
+@keyframes modalPop {
+  0% { opacity: 0; transform: scale(0.85); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* 6. Loader Animation */
+.loader {
+  border: 4px solid #fff;
+  border-top: 4px solid #ff6f61;
+  border-right: 4px solid #6a82fb;
+  border-bottom: 4px solid #43cea2;
+  border-left: 4px solid #fc5c7d;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 7. Confetti Animation for Success Modal */
+.confetti {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 2000;
+}
+.confetti-piece {
+  position: absolute;
+  width: 12px; height: 18px;
+  background: linear-gradient(135deg, #ff6f61, #6a82fb, #43cea2, #fc5c7d);
+  opacity: 0.8;
+  border-radius: 3px;
+  animation: confetti-fall 1.8s linear forwards;
+}
+@keyframes confetti-fall {
+  0% { transform: translateY(-40px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(400px) rotate(360deg); opacity: 0; }
+}
+
+/* 8. Misc */
+ul {
+  padding-left: 1.2em;
+}
+
+img {
+  box-shadow: 0 2px 12px rgba(67,206,162,0.12);
+  border-radius: 10px;
+  transition: transform 0.3s;
+}
+img:hover {
+  transform: scale(1.04) rotate(-2deg);
 }
