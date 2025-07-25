@@ -24,8 +24,7 @@ A beautiful, animated React app for minting NFTs on the SUI blockchain. Features
 
 1. **Clone the repo:**
    ```bash
-   git clone <your-repo-url>
-   cd <project-folder>
+   git clone 
    ```
 2. **Install dependencies:**
    ```bash
