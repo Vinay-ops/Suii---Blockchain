@@ -1,5 +1,7 @@
 # Suii---Blockchain
 
+### 🔗 [Live App on Vercel](https://suii-blockchain-h04sbvos2-vinay-ops-projects.vercel.app)
+
 # SUI NFT Minting App
 
 A beautiful, animated React app for minting NFTs on the SUI blockchain. Features wallet connection, live image preview, animated UI, confetti celebration, and robust error handling.
