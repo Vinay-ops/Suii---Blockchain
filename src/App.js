@@ -23,7 +23,9 @@ const LoyaltyCardPage = () => {
   // Form states
   const [mintForm, setMintForm] = useState({
     customerId: '',
-    imageUrl: ''
+    imageUrl: '',
+    name: '',
+    description: ''
   });
 
   // Image preview state
@@ -106,11 +108,13 @@ const LoyaltyCardPage = () => {
         target: `${packageId}::loyalty_card::mint_loyalty`,
         arguments: [
           tx.pure.address(mintForm.customerId),
-          tx.pure.string(mintForm.imageUrl)
+          tx.pure.string(mintForm.imageUrl),
+          tx.pure.string(mintForm.name),
+          tx.pure.string(mintForm.description)
         ]
       });
       const result = await signAndExecute({ transaction: tx });
-      setMintForm({ customerId: '', imageUrl: '' });
+      setMintForm({ customerId: '', imageUrl: '', name: '', description: '' });
       setModal({ open: true, type: 'success', message: 'Minting succeeded!', txUrl: result?.digest ? `https://suiexplorer.com/txblock/${result.digest}?network=testnet` : '' });
     } catch (error) {
       setModal({ open: true, type: 'error', message: `Minting failed: ${error.message}`, txUrl: '' });
@@ -154,7 +158,10 @@ const LoyaltyCardPage = () => {
 
       {/* Mint Loyalty Card */}
       <section className="form-section">
-        <label>Wallet Address</label>
+        <label>
+          Wallet Address
+          <span title="The Sui address that will own the NFT" style={{ marginLeft: 4, cursor: 'help', color: '#888' }}>ⓘ</span>
+        </label>
         <input
           type="text"
           name="customerId"
@@ -162,7 +169,10 @@ const LoyaltyCardPage = () => {
           onChange={handleMintChange}
           placeholder="Enter Customer Sui Address"
         />
-        <label>Image URL</label>
+        <label>
+          Image URL
+          <span title="Direct link to the image for your NFT. You can also upload to IPFS later." style={{ marginLeft: 4, cursor: 'help', color: '#888' }}>ⓘ</span>
+        </label>
         <input
           type="text"
           name="imageUrl"
@@ -173,20 +183,47 @@ const LoyaltyCardPage = () => {
           }}
           placeholder="Enter Image URL"
         />
-        {/* Image Preview */}
-        {mintForm.imageUrl && !imgError && (
-          <div style={{ margin: '10px 0' }}>
-            <img
-              src={mintForm.imageUrl}
-              alt="Preview"
-              style={{ maxWidth: '300px', maxHeight: '200px', border: '1px solid #ccc', borderRadius: '8px' }}
-              onError={() => setImgError(true)}
-            />
-          </div>
-        )}
-        {imgError && (
-          <div style={{ color: 'red', margin: '10px 0' }}>
-            Could not load image. Please check the URL.
+        <label>
+          Name
+          <span title="The name of your NFT (e.g., 'Loyalty Card #1')" style={{ marginLeft: 4, cursor: 'help', color: '#888' }}>ⓘ</span>
+        </label>
+        <input
+          type="text"
+          name="name"
+          value={mintForm.name}
+          onChange={handleMintChange}
+          placeholder="Enter NFT Name"
+        />
+        <label>
+          Description
+          <span title="A short description for your NFT." style={{ marginLeft: 4, cursor: 'help', color: '#888' }}>ⓘ</span>
+        </label>
+        <input
+          type="text"
+          name="description"
+          value={mintForm.description}
+          onChange={handleMintChange}
+          placeholder="Enter NFT Description"
+        />
+        {/* Live NFT Preview */}
+        {(mintForm.imageUrl || mintForm.name || mintForm.description) && (
+          <div style={{ margin: '18px 0', padding: 16, border: '1px solid #eee', borderRadius: 10, background: '#fafbfc', maxWidth: 340 }}>
+            <div style={{ fontWeight: 600, marginBottom: 8 }}>NFT Preview</div>
+            {mintForm.imageUrl && !imgError && (
+              <img
+                src={mintForm.imageUrl}
+                alt="NFT Preview"
+                style={{ maxWidth: '300px', maxHeight: '180px', border: '1px solid #ccc', borderRadius: '8px', marginBottom: 8 }}
+                onError={() => setImgError(true)}
+              />
+            )}
+            {imgError && (
+              <div style={{ color: 'red', margin: '10px 0' }}>
+                Could not load image. Please check the URL.
+              </div>
+            )}
+            <div style={{ fontSize: '1.1em', fontWeight: 500, margin: '6px 0' }}>{mintForm.name || <span style={{ color: '#bbb' }}>[NFT Name]</span>}</div>
+            <div style={{ fontSize: '0.98em', color: '#555' }}>{mintForm.description || <span style={{ color: '#ccc' }}>[NFT Description]</span>}</div>
           </div>
         )}
         <button 
@@ -194,7 +231,9 @@ const LoyaltyCardPage = () => {
           disabled={
             loading || 
             !mintForm.customerId.trim() || 
-            !mintForm.imageUrl.trim()
+            !mintForm.imageUrl.trim() ||
+            !mintForm.name.trim() ||
+            !mintForm.description.trim()
           }
         >
           {loading ? 'Minting...' : 'Mint your NFT'}
