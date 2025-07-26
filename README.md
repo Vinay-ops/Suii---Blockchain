@@ -1,6 +1,6 @@
 # Suii---Blockchain
 
-### 🔗 [Live App on Vercel](https://suii-blockchain-h04sbvos2-vinay-ops-projects.vercel.app)
+### 🔗 [Live App on Vercel](https://suii-blockchain.vercel.app/)
 
 # SUI NFT Minting App
 
