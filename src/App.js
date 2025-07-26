@@ -166,6 +166,10 @@ const LoyaltyCardPage = () => {
       setMintForm({ customerId: '', imageUrl: '', name: '', description: '' });
       setUploadedImage(null);
       setModal({ open: true, type: 'success', message: 'Minting succeeded!', txUrl: result?.digest ? `https://suiexplorer.com/txblock/${result.digest}?network=testnet` : '' });
+      // Redirect to wallet explorer after minting
+      if (currentAccount?.address) {
+        window.open(`https://suiexplorer.com/address/${currentAccount.address}?network=testnet`, '_blank');
+      }
     } catch (error) {
       setModal({ open: true, type: 'error', message: `Minting failed: ${error.message}`, txUrl: '' });
       console.error('Error minting loyalty card:', error);
@@ -209,9 +213,44 @@ const LoyaltyCardPage = () => {
             </div>
           </div>
           <div className="header-wallet">
-            <ConnectButton />
+            {currentAccount ? (
+              <div className="wallet-connected">
+                <span role="img" aria-label="wallet">👛</span>
+                <span style={{ marginLeft: 8, fontWeight: 600 }}>
+                  {currentAccount.address.slice(0, 6)}...{currentAccount.address.slice(-4)}
+                </span>
+                <span className="wallet-status-dot" style={{
+                  display: 'inline-block',
+                  width: 10,
+                  height: 10,
+                  background: '#43cea2',
+                  borderRadius: '50%',
+                  marginLeft: 8
+                }} />
+              </div>
+            ) : (
+              <ConnectButton />
+            )}
           </div>
         </header>
+
+        {/* Wallet Info Card */}
+        {currentAccount && (
+          <div className="card" style={{ marginTop: '1.5rem', marginBottom: '2.5rem', background: 'var(--card-bg)', display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
+            <div style={{ fontWeight: 600, fontSize: '1.1em', marginBottom: 4 }}>Wallet Info</div>
+            <div><b>Address:</b> {currentAccount.address.slice(0, 8)}...{currentAccount.address.slice(-6)}</div>
+            <div><b>Balance:</b> {balance !== null ? `${balance} SUI` : 'Loading...'}</div>
+            <div><b>Minting History:</b></div>
+            <ul style={{ fontSize: '0.97em', marginLeft: '1em', marginBottom: 0 }}>
+              {recentTxs.length === 0 && <li>No recent transactions</li>}
+              {recentTxs.map((tx, i) => (
+                <li key={i}>
+                  <a href={`https://suiexplorer.com/txblock/${tx}?network=testnet`} target="_blank" rel="noopener noreferrer">{tx.slice(0, 10)}...</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Create NFT Card */}
         <div className="card">
@@ -374,7 +413,7 @@ const LoyaltyCardPage = () => {
           
           {!currentAccount ? (
             <div className="collection-card">
-              <div style={{ fontSize: '2em', marginBottom: '1rem' }}>🔗</div>
+              <div style={{ fontSize: '2em', marginBottom: '1rem' }}></div>
               <div style={{ marginBottom: '0.5rem' }}>Connect Your Wallet</div>
               <div style={{ fontSize: '0.9em', color: '#888', textAlign: 'center' }}>
                 Connect your wallet to view and manage your NFT collection
@@ -392,26 +431,14 @@ const LoyaltyCardPage = () => {
                 </div>
               ) : (
                 <div className="collection-gallery">
-                  {recentTxs.map((tx, i) => (
-                    <div key={i} className="nft-card">
-                      <div style={{ 
-                        width: '100%', 
-                        height: '110px', 
-                        background: 'linear-gradient(135deg, #6a82fb, #fc5c7d)', 
-                        borderRadius: 8, 
-                        marginBottom: '0.7em',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'white',
-                        fontSize: '2em'
-                      }}>
-                        🖼️
-                      </div>
-                      <div className="nft-title">NFT #{i + 1}</div>
-                      <div className="nft-desc">Transaction: {tx.slice(0, 8)}...</div>
-                    </div>
-                  ))}
+                  <div style={{ fontWeight: 600, fontSize: '1.1em', marginBottom: 8, width: '100%' }}>Minting History</div>
+                  <ul style={{ fontSize: '0.97em', marginLeft: '1em', marginBottom: 0, width: '100%' }}>
+                    {recentTxs.map((tx, i) => (
+                      <li key={i}>
+                        <a href={`https://suiexplorer.com/txblock/${tx}?network=testnet`} target="_blank" rel="noopener noreferrer">{tx.slice(0, 10)}...</a>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
             </div>
