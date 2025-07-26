@@ -4,7 +4,7 @@
 :root {
   --bg-color: #121212;
   --card-bg: rgba(255, 255, 255, 0.05);
-  --text-color: #e0e0e0;
+  --text-color: #222;
   --accent-color: #ff6f61;
   --input-bg: rgba(255, 255, 255, 0.10);
   --shadow-color: rgba(0, 0, 0, 0.7);
@@ -17,7 +17,7 @@
     /* Optional: override for light mode */
     --bg-color: #f5f5f5;
     --card-bg: rgba(255, 255, 255, 0.8);
-    --text-color: #333333;
+    --text-color: #222;
     --accent-color: #0077cc;
     --input-bg: rgba(0, 0, 0, 0.05);
     --shadow-color: rgba(0, 0, 0, 0.15);
@@ -41,7 +41,7 @@ body {
 body.light-mode {
   --bg-color: #f5f5f5;
   --card-bg: rgba(255, 255, 255, 0.8);
-  --text-color: #333333;
+  --text-color: #222;
   --accent-color: #0077cc;
   --input-bg: rgba(0, 0, 0, 0.05);
   --shadow-color: rgba(0, 0, 0, 0.15);
@@ -189,7 +189,7 @@ input[type="number"],
 textarea,
 select {
   width: 100%;
-  background: rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.9);
   color: #222;
   border: none;
   border-radius: 8px;
@@ -212,7 +212,7 @@ label {
   display: block;
   margin-bottom: 0.25rem;
   font-weight: 600;
-  color: #6a82fb;
+  color: #222;
   letter-spacing: 0.5px;
 }
 
@@ -329,7 +329,7 @@ img:hover {
   align-items: center;
   font-size: 1.35rem;
   font-weight: 700;
-  color: var(--text-color);
+  color: #222;
   letter-spacing: 1px;
   gap: 0.7rem;
 }
@@ -371,10 +371,11 @@ img:hover {
   animation: cardFadeIn 1.2s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
+/* Update text colors for better visibility */
 .card-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--text-color);
+  color: #222;
   margin-bottom: 1.2rem;
   letter-spacing: 0.5px;
 }
@@ -432,7 +433,7 @@ img:hover {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  color: #aaa;
+  color: #222;
   font-size: 1.1em;
   background: var(--card-bg);
   border-radius: 16px;
@@ -448,13 +449,13 @@ img:hover {
   margin-top: 1.2rem;
 }
 .nft-card {
-  background: rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.9);
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(67,206,162,0.10);
   padding: 1rem;
   width: 180px;
   text-align: center;
-  color: var(--text-color);
+  color: #222;
 }
 .nft-card img {
   width: 100%;
@@ -467,10 +468,11 @@ img:hover {
   font-weight: 600;
   font-size: 1.05em;
   margin-bottom: 0.2em;
+  color: #222;
 }
 .nft-card .nft-desc {
   font-size: 0.95em;
-  color: #bbb;
+  color: #555;
 }
 
 /* --- FOOTER --- */
@@ -521,6 +523,26 @@ img:hover {
 .theme-toggle:hover {
   background: var(--accent-color);
   color: #fff;
+}
+
+/* Update modal text colors */
+.modal-content {
+  background: #fff;
+  color: #222;
+}
+
+/* Update any remaining text elements */
+p, div, span {
+  color: #222;
+}
+
+/* Ensure links are visible */
+a {
+  color: #0077cc;
+}
+
+a:hover {
+  color: #0056b3;
 }
 
 /* --- RESPONSIVE --- */
@@ -578,11 +600,11 @@ img:hover {
 .wallet-connected {
   display: flex;
   align-items: center;
-  background: rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.9);
   border-radius: 8px;
   padding: 0.5em 1em;
   font-size: 1em;
-  color: var(--text-color);
+  color: #222;
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(67,206,162,0.10);
 }
